@@ -49,7 +49,7 @@ class TasksController extends Controller
     {
         
         $this->validate($request, [
-            'status' => 'required|max:255',
+            'status' => 'required|max:10',
             'content' => 'required|max:255',
         ]);
         
@@ -102,7 +102,7 @@ class TasksController extends Controller
     {
         
         $this->validate($request, [
-            'status' => 'required|max:255',
+            'status' => 'required|max:10',
             'content' => 'required|max:255',
         ]);
         
