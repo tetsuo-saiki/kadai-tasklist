@@ -49,7 +49,7 @@ class TasksController extends Controller
     {
         
         $this->validate($request, [
-            'status' => 'required',
+            'status' => 'required|max:100',
         ]);
         
         $task = new Task;
@@ -101,7 +101,7 @@ class TasksController extends Controller
     {
         
         $this->validate($request, [
-            'status' => 'required',
+            'status' => 'required|max:100',
         ]);
         
         $task = Task::find($id);
