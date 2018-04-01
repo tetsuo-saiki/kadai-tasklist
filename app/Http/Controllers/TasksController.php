@@ -18,11 +18,27 @@ class TasksController extends Controller
      */
     public function index()
     {
+        
+    //ログインしているユーザの投稿を表示
+        $data = [];
+        if (\Auth::check()) {
+            $user = \Auth::user();
+            $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
+
+            $data = [
+                'user' => $user,
+                'tasks' => $tasks,
+            ];
+        }
+        return view('tasks.index', $data);
+    
+    /*  投稿されたタスクをそのまま表示
         $tasks = Task::all();
 
-        return view('tasks.index', [
-            'tasks' => $tasks,
-        ]);
+        return view('tasks.index',
+        ['tasks' => $tasks,]
+        );
+    */
     }
 
     /**
@@ -35,7 +51,7 @@ class TasksController extends Controller
         $task = new Task;
 
         return view('tasks.create', [
-            'task' => $task,
+           'task' => $task,
         ]);
     }
 
@@ -49,14 +65,22 @@ class TasksController extends Controller
     {
         
         $this->validate($request, [
-            'status' => 'required|max:10',
             'content' => 'required|max:255',
+            'status' => 'required|max:10',
         ]);
-        
-        $task = new Task;
-        $task->content = $request->content;
-        $task->status = $request->status;
-        $task->save();
+   
+        $request->user()->tasks()->create([   //タスクとステータスを保存 ここでuser_idとの関連付け
+            'content' => $request->content,
+            'status' => $request->status,  
+        ]);
+    
+    //元々書いていたコード
+    //外部キー制約違反発生　関連付けできておらず
+    //あとモデル側で$fillable宣言してるのでcreate使える
+    //    $task = new Task;　　　　　　　　　　　
+    //    $task->content = $request->content;　　
+    //    $task->status = $request->status;　　　
+    //    $task->save();
 
         return redirect('/');
     }
